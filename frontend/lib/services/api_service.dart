@@ -2,10 +2,11 @@ import 'package:dio/dio.dart';
 import 'package:frontend/utils/app_logger.dart';
 import 'package:frontend/utils/global.dart';
 import 'package:frontend/utils/helper.dart';
+import 'package:injectable/injectable.dart';
 
+@lazySingleton
 class ApiService {
-  static ApiService _instanse;
-  static Dio _dio;
+  Dio _dio;
 
   ApiService() {
     final options = BaseOptions(
@@ -20,11 +21,7 @@ class ApiService {
     addErrorHandler();
   }
 
-  static Dio getInstance() {
-    if (_instanse == null) {
-      _instanse = ApiService();
-    }
-
+  Dio getClient(){
     return _dio;
   }
 

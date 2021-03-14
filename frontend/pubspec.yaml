@@ -13,6 +13,7 @@ dependencies:
     sdk: flutter
   cupertino_icons: ^1.0.2
   dio: ^3.0.10
+  enum_to_string: ^1.0.14
   fluttertoast: ^7.1.8
   get_it: ^6.0.0
   injectable: ^1.2.0
