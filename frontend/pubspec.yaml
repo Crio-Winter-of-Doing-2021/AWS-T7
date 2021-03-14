@@ -1,0 +1,27 @@
+name: frontend
+description: A new Flutter project.
+
+publish_to: "none" # Remove this line if you wish to publish to pub.dev
+
+version: 1.0.0+1
+
+environment:
+  sdk: ">=2.7.0 <3.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  cupertino_icons: ^1.0.2
+  dio: ^3.0.10
+  fluttertoast: ^7.1.8
+  get_it: ^6.0.0
+  injectable: ^1.2.0
+  logger: ^0.9.4
+  shared_preferences: ^2.0.4
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+
+flutter:
+  uses-material-design: true
