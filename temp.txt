@@ -1,0 +1,27 @@
+we will use queue and list of running tasks with async/await for scheduler.
+
+server start:
+poll db acc to time
+latest 100
+1 , 2, 3
+sleep(time - now) 
+pop
+while(2 sec){
+    run
+}
+
+- tasks
+name
+status
+scheduled_at
+created_at
+user_id
+
+- orchestrator:
+prev
+next
+
+
+
+optional:
+retry
