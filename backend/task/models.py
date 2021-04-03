@@ -10,6 +10,7 @@ class Task(models.Model):
     state = FSMField(default="Scheduled")
     time=models.IntegerField()
     url=models.URLField(max_length=1200)
+    name=models.CharField(max_length=120)
 
     def schedule(self):
         if self.state=="Scheduled":
