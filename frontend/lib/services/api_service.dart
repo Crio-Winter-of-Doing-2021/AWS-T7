@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:dio/dio.dart';
 import 'package:frontend/utils/app_logger.dart';
 import 'package:frontend/utils/global.dart';
@@ -14,6 +16,9 @@ class ApiService {
       connectTimeout: 90000,
       receiveTimeout: 90000,
       sendTimeout: 90000,
+      headers: {
+        HttpHeaders.contentTypeHeader: "application/json",
+      },
     );
 
     _dio = new Dio(options);
@@ -21,7 +26,7 @@ class ApiService {
     addErrorHandler();
   }
 
-  Dio getClient(){
+  Dio getClient() {
     return _dio;
   }
 
@@ -38,6 +43,7 @@ class ApiService {
   }
 
   Future<Response<dynamic>> _errorHandler(DioError dioError) async {
+    AppLogger.print(dioError);
     String message;
     if (dioError.type == DioErrorType.RESPONSE) {
       final data = dioError.response.data;

@@ -16,16 +16,15 @@ void main() async {
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return MultiProvider(
-      providers: [
-        ChangeNotifierProvider(create: (ctx) => TaskProvider()),
-      ],
+    return ChangeNotifierProvider(
+      create: (ctx) => TaskProvider(),
       child: MaterialApp(
         title: 'Flutter Demo',
         theme: ThemeData(
           primarySwatch: Colors.blue,
           primaryColor: AppTheme.primaryColor,
           accentColor: AppTheme.accentColor,
+          backgroundColor: AppTheme.scaffoldBackgroundColor,
         ),
         home: Center(child: HomePage()),
       ),

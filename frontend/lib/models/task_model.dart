@@ -1,37 +1,33 @@
 import 'dart:convert';
 
-import 'package:enum_to_string/enum_to_string.dart';
-
-import 'package:frontend/models/status.dart';
-
 class TaskModel {
   final int id;
   final String name;
-  final Status status;
-  final String taskUrl;
-  final int delay;
+  final String state;
+  final int time;
+  final String url;
 
   TaskModel({
     this.id,
     this.name,
-    this.status,
-    this.taskUrl,
-    this.delay,
+    this.state,
+    this.time,
+    this.url,
   });
 
   TaskModel copyWith({
     int id,
     String name,
-    Status status,
-    String taskUrl,
-    int delay,
+    String state,
+    int time,
+    String url,
   }) {
     return TaskModel(
       id: id ?? this.id,
       name: name ?? this.name,
-      status: status ?? this.status,
-      taskUrl: taskUrl ?? this.taskUrl,
-      delay: delay ?? this.delay,
+      state: state ?? this.state,
+      time: time ?? this.time,
+      url: url ?? this.url,
     );
   }
 
@@ -39,9 +35,9 @@ class TaskModel {
     return {
       'id': id,
       'name': name,
-      'status': status.toString(),
-      'taskUrl': taskUrl,
-      'delay': delay,
+      'state': state,
+      'time': time,
+      'url': url,
     };
   }
 
@@ -49,9 +45,9 @@ class TaskModel {
     return TaskModel(
       id: map['id'],
       name: map['name'],
-      status: EnumToString.fromString(Status.values, map['status']),
-      taskUrl: map['taskUrl'],
-      delay: map['delay'],
+      state: map['state'],
+      time: map['time'],
+      url: map['url'],
     );
   }
 
@@ -61,7 +57,7 @@ class TaskModel {
 
   @override
   String toString() {
-    return 'TaskModel(id: $id, name: $name, status: $status, taskUrl: $taskUrl, delay: $delay)';
+    return 'TaskModel(id: $id, name: $name, state: $state, time: $time, url: $url)';
   }
 
   @override
@@ -71,17 +67,17 @@ class TaskModel {
     return other is TaskModel &&
       other.id == id &&
       other.name == name &&
-      other.status == status &&
-      other.taskUrl == taskUrl &&
-      other.delay == delay;
+      other.state == state &&
+      other.time == time &&
+      other.url == url;
   }
 
   @override
   int get hashCode {
     return id.hashCode ^
       name.hashCode ^
-      status.hashCode ^
-      taskUrl.hashCode ^
-      delay.hashCode;
+      state.hashCode ^
+      time.hashCode ^
+      url.hashCode;
   }
 }

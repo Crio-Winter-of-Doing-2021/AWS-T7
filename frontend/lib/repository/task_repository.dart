@@ -17,13 +17,13 @@ class TaskRepository {
 
       if (res.statusCode == 200) {
         List<TaskModel> list = [];
-        (res.data['data'] as List).forEach((element) {
+        (res.data as List).forEach((element) {
           list.add(TaskModel.fromMap(element));
         });
 
         return ApiResponse(model: list, code: 200);
       } else {
-        return ApiResponse.withError(res.data['message'], 500);
+        return ApiResponse.withError("Something went wrong", res.statusCode);
       }
     } catch (e) {
       AppLogger.print(e);
@@ -31,15 +31,23 @@ class TaskRepository {
     }
   }
 
-  Future<ApiResponse<TaskModel>> scheduleTask(TaskModel taskModel) async {
+  Future<ApiResponse<TaskModel>> scheduleTask(TaskModel task) async {
     try {
-      final res = await _apiService.getClient().post('/tasks', data: taskModel);
+      final res = await _apiService.getClient().post(
+        '/tasks',
+        data: {
+          "url": task.url,
+          "time": task.time,
+          "name": task.name,
+        },
+      );
 
-      if (res.statusCode == 200) {
-        final task = TaskModel.fromMap(res.data['data']);
-        return ApiResponse(model: task, code: 200);
+      if (res.statusCode == 201) {
+        final task = TaskModel.fromMap(res.data);
+        return ApiResponse(model: task, code: 201);
       } else {
-        return ApiResponse.withError(res.data['message'], 500);
+        AppLogger.print(res.data);
+        return ApiResponse.withError("Something went wrong", res.statusCode);
       }
     } catch (e) {
       AppLogger.print(e);
@@ -49,13 +57,21 @@ class TaskRepository {
 
   Future<ApiResponse<TaskModel>> modifyTask(TaskModel task) async {
     try {
-      final res = await _apiService.getClient().patch('/tasks', data: task);
+      final res = await _apiService.getClient().patch(
+        '/tasks/${task.id}',
+        data: {
+          "url": task.url,
+          "time": task.time,
+          "name": task.name,
+        },
+      );
 
       if (res.statusCode == 200) {
-        final resTask = TaskModel.fromMap(res.data['data']);
+        final resTask = TaskModel.fromMap(res.data);
         return ApiResponse(model: resTask, code: 200);
       } else {
-        return ApiResponse.withError(res.data['message'], 500);
+        AppLogger.print(res.data);
+        return ApiResponse.withError("Something went wrong", res.statusCode);
       }
     } catch (e) {
       AppLogger.print(e);
@@ -74,7 +90,7 @@ class TaskRepository {
           code: 200,
         );
       } else {
-        return ApiResponse.withError(res.data['message'], 500);
+        return ApiResponse.withError("Something went wrong", res.statusCode);
       }
     } catch (e) {
       AppLogger.print(e);
@@ -82,15 +98,14 @@ class TaskRepository {
     }
   }
 
-  Future<ApiResponse<TaskModel>> cancelTask(int id) async {
+  Future<ApiResponse<bool>> cancelTask(int id) async {
     try {
-      final res = await _apiService.getClient().patch('/tasks/status/$id');
+      final res = await _apiService.getClient().patch('/tasks/cancel/$id');
 
       if (res.statusCode == 200) {
-        final resTask = TaskModel.fromMap(res.data['data']);
-        return ApiResponse(model: resTask, code: 200);
+        return ApiResponse(model: true, code: 200);
       } else {
-        return ApiResponse.withError(res.data['message'], 500);
+        return ApiResponse.withError("Something went wrong", res.statusCode);
       }
     } catch (e) {
       AppLogger.print(e);
