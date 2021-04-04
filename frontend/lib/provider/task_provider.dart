@@ -3,7 +3,6 @@ import 'package:frontend/config/locator.dart';
 import 'package:frontend/models/api_response.dart';
 import 'package:frontend/models/task_model.dart';
 import 'package:frontend/repository/task_repository.dart';
-import 'package:frontend/utils/app_logger.dart';
 import 'package:frontend/utils/helper.dart';
 
 class TaskProvider extends ChangeNotifier {
@@ -15,8 +14,34 @@ class TaskProvider extends ChangeNotifier {
   ViewState _state = ViewState.Idle;
   ViewState get state => _state;
 
+  final List<String> filters = [
+    'All',
+    'Scheduled',
+    'Running',
+    'Completed',
+    'Cancelled',
+  ];
+
+  String currentFilter = 'All';
+
   Future<void> getAllTasks() async {
     final ApiResponse res = await _repo.getAllTasks();
+
+    if (res.code == 200) {
+      _list = res.model;
+      setState(ViewState.Done);
+    } else {
+      setState(ViewState.Error);
+    }
+  }
+
+  Future<void> getTaskByFilter() async {
+    if (currentFilter == 'All') {
+      getAllTasks();
+      return;
+    }
+    
+    final ApiResponse res = await _repo.getTaskByFilter(currentFilter);
 
     if (res.code == 200) {
       _list = res.model;
@@ -70,6 +95,11 @@ class TaskProvider extends ChangeNotifier {
     } else {
       Helper.showToast("Something went worng", false);
     }
+  }
+
+  void changeFilter(String f) {
+    currentFilter = f;
+    getTaskByFilter();
   }
 
   void setState(ViewState state) {

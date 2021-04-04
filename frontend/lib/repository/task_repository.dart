@@ -31,6 +31,26 @@ class TaskRepository {
     }
   }
 
+  Future<ApiResponse<List<TaskModel>>> getTaskByFilter(String filter) async {
+    try {
+      final res = await _apiService.getClient().get('/tasks/filter/$filter');
+
+      if (res.statusCode == 200) {
+        List<TaskModel> list = [];
+        (res.data as List).forEach((element) {
+          list.add(TaskModel.fromMap(element));
+        });
+
+        return ApiResponse(model: list, code: 200);
+      } else {
+        return ApiResponse.withError("Something went wrong", res.statusCode);
+      }
+    } catch (e) {
+      AppLogger.print(e);
+      return ApiResponse.withError(e.toString(), 500);
+    }
+  }
+
   Future<ApiResponse<TaskModel>> scheduleTask(TaskModel task) async {
     try {
       final res = await _apiService.getClient().post(
