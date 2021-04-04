@@ -18,6 +18,10 @@ class AllTasksView(APIView):
         serializer = TaskSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
+            id=serializer.data.get('id')
+            obj=get_object_or_404(Task,id=id)
+            obj.schedule()
+            # return Response({"message":message}, status=status.HTTP_200_OK)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
@@ -32,6 +36,7 @@ class SingleTaskView(APIView):
         serializer=TaskSerializer(instance=obj,partial=True,data=request.data)
         if serializer.is_valid():
             serializer.save()
+            obj.schedule()
             return Response(serializer.data, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
@@ -53,6 +58,12 @@ class StatusView(APIView):
     def get(self,request,id):
         obj=get_object_or_404(Task,id=id)
         return Response({"status":obj.state},status=status.HTTP_200_OK)
+
+class FilterView(APIView):
+    def get(self,reqeuest,needed_state):
+        tasks=Task.objects.filter(state=needed_state)
+        serializer=TaskSerializer(tasks,many=True)
+        return Response(serializer.data,status=status.HTTP_200_OK)
 # @api_view(['GET'])
 # def get_all_tasks(request):
 #     tasks=Task.objects.all().order_by('-id')
