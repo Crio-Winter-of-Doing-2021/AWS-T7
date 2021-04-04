@@ -112,4 +112,19 @@ class TaskRepository {
       return ApiResponse.withError(e.toString(), 500);
     }
   }
+
+  Future<ApiResponse<String>> checkStatus(int id) async {
+    try {
+      final res = await _apiService.getClient().get('/tasks/status/$id');
+
+      if (res.statusCode == 200) {
+        return ApiResponse(model: res.data['status'], code: 200);
+      } else {
+        return ApiResponse.withError("Something went wrong", res.statusCode);
+      }
+    } catch (e) {
+      AppLogger.print(e);
+      return ApiResponse.withError(e.toString(), 500);
+    }
+  }
 }

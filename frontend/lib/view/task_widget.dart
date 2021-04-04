@@ -39,6 +39,11 @@ class TaskWidget extends StatelessWidget {
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: [
+        TextButton(
+          onPressed: () => _checkStatus(context),
+          child: Text('Check status'),
+        ),
+        SizedBox(width: 8),
         Chip(
           backgroundColor: Colors.grey[100],
           label: Padding(
@@ -66,6 +71,12 @@ class TaskWidget extends StatelessWidget {
     BuildContext context,
   ) {
     Provider.of<TaskProvider>(context, listen: false).canceltask(task);
+  }
+
+  void _checkStatus(
+    BuildContext context,
+  ) {
+    Provider.of<TaskProvider>(context, listen: false).checkStatus(task);
   }
 
   void _update(BuildContext context) {

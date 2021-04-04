@@ -26,6 +26,7 @@ class MyApp extends StatelessWidget {
           accentColor: AppTheme.accentColor,
           backgroundColor: AppTheme.scaffoldBackgroundColor,
         ),
+        debugShowCheckedModeBanner: false,
         home: Center(child: HomePage()),
       ),
     );

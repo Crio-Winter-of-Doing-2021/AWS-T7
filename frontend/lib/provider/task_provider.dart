@@ -3,6 +3,7 @@ import 'package:frontend/config/locator.dart';
 import 'package:frontend/models/api_response.dart';
 import 'package:frontend/models/task_model.dart';
 import 'package:frontend/repository/task_repository.dart';
+import 'package:frontend/utils/app_logger.dart';
 import 'package:frontend/utils/helper.dart';
 
 class TaskProvider extends ChangeNotifier {
@@ -52,9 +53,20 @@ class TaskProvider extends ChangeNotifier {
     final ApiResponse res = await _repo.cancelTask(task.id);
     if (res.code == 200) {
       final index = _list.indexWhere((element) => element.id == task.id);
-      _list[index] = _list[index].copyWith(state: 'Caccelled');
+      _list[index] = _list[index].copyWith(state: 'Cancelled');
       notifyListeners();
       Helper.showToast("Task cacncelled successfully", true);
+    } else {
+      Helper.showToast("Something went worng", false);
+    }
+  }
+
+  Future<void> checkStatus(TaskModel task) async {
+    final ApiResponse res = await _repo.checkStatus(task.id);
+    if (res.code == 200) {
+      final index = _list.indexWhere((element) => element.id == task.id);
+      _list[index] = _list[index].copyWith(state: res.model);
+      notifyListeners();
     } else {
       Helper.showToast("Something went worng", false);
     }
