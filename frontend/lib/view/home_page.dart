@@ -3,7 +3,7 @@ import 'package:frontend/provider/task_provider.dart';
 import 'package:frontend/style/app_theme.dart';
 import 'package:frontend/view/create_task_widget.dart';
 import 'package:frontend/view/task_widget.dart';
-import 'package:frontend/widgets/loader.dart';
+// import 'package:frontend/widgets/loader.dart';
 import 'package:provider/provider.dart';
 
 class HomePage extends StatefulWidget {
@@ -74,7 +74,7 @@ class _HomePageState extends State<HomePage> {
                 ),
                 Expanded(
                   child: provider.state == ViewState.Loading
-                      ? Loader()
+                      ? CircularProgressIndicator()
                       : provider.list.length == 0
                           ? Center(
                               child: Text("No Items"),
