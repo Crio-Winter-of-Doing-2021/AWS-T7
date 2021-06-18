@@ -7,11 +7,22 @@ STATES = ('Scheduled', 'Running', 'Completed', 'Failed', 'Cancelled')
 # STATES = list(zip(STATES, STATES))
 
 class Task(models.Model):
+    TYPE_OF_FUNCTION_CHOICES = [
+        ('FILE','FILE'),
+        ('URL','URL')
+    ]
+    
+    type = models.CharField(
+        max_length=4,
+        choices=TYPE_OF_FUNCTION_CHOICES,
+        default='URL',
+    )
     state = FSMField(default="Scheduled")
     time=models.IntegerField()
-    url=models.URLField(max_length=1200)
+    url=models.URLField(max_length=1200,null=True,blank=True)
     name=models.CharField(max_length=120)
-
+    file=models.FileField(null=True,blank=True)
+    
     def schedule(self):
         if self.state=="Scheduled":
             delay=self.time//100
@@ -23,9 +34,14 @@ class Task(models.Model):
     def handler(self):
         self.state="Running"
         super().save()
-        url=self.url
-        req=requests.get(url) 
-        print("\n"*10,req.json())
+        if self.type=="URL":
+            url=self.url
+            req=requests.get(url) 
+            print("\n"*10,req.json())
+        else:
+            print(self.file)
+            code=bytes(self.file.read()).decode("utf-8") 
+            exec(code)
         self.state="Completed"
         super().save()
 
