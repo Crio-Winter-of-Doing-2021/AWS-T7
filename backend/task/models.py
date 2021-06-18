@@ -6,6 +6,10 @@ import requests
 STATES = ('Scheduled', 'Running', 'Completed', 'Failed', 'Cancelled')
 # STATES = list(zip(STATES, STATES))
 
+def upload_location(instance, filename):
+	file_path = 'files/{filename}'.format(filename=filename)
+	return file_path
+
 class Task(models.Model):
     TYPE_OF_FUNCTION_CHOICES = [
         ('FILE','FILE'),
@@ -21,7 +25,7 @@ class Task(models.Model):
     time=models.IntegerField()
     url=models.URLField(max_length=1200,null=True,blank=True)
     name=models.CharField(max_length=120)
-    file=models.FileField(null=True,blank=True)
+    file=models.FileField(null=True,blank=True,upload_to=upload_location)
     
     def schedule(self):
         if self.state=="Scheduled":

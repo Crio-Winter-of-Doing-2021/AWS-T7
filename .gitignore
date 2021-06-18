@@ -4,6 +4,7 @@ aws_env/
 credentials.txt
 *.py[cod]
 *$py.class
+backend/files/
 
 # C extensions
 *.so
