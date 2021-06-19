@@ -2,6 +2,8 @@ from django.db import models
 from threading import Timer
 from django_fsm import FSMField
 import requests
+from io import StringIO
+from contextlib import redirect_stdout
 # Create your models here.
 STATES = ('Scheduled', 'Running', 'Completed', 'Failed', 'Cancelled')
 # STATES = list(zip(STATES, STATES))
@@ -26,6 +28,7 @@ class Task(models.Model):
     url=models.URLField(max_length=1200,null=True,blank=True)
     name=models.CharField(max_length=120)
     file=models.FileField(null=True,blank=True,upload_to=upload_location)
+    output=models.JSONField(null=True,blank=True)
     
     def schedule(self):
         if self.state=="Scheduled":
@@ -41,11 +44,14 @@ class Task(models.Model):
         if self.type=="URL":
             url=self.url
             req=requests.get(url) 
-            print("\n"*10,req.json())
+            self.output=req.json()
         else:
-            print(self.file)
+            # print(self.file)
             code=bytes(self.file.read()).decode("utf-8") 
-            exec(code)
+            f = StringIO()
+            with redirect_stdout(f):
+                exec(code)
+            self.output=f.getvalue()
         self.state="Completed"
         super().save()
 
