@@ -55,10 +55,15 @@ class CancelView(APIView):
 class StatusView(APIView):
     def get(self,request,id):
         obj=get_object_or_404(Task,id=id)
-        return Response({"status":obj.state},status=status.HTTP_200_OK)
+        return Response({"status":obj.state,"output":obj.output},status=status.HTTP_200_OK)
 
 class FilterView(APIView):
     def get(self,reqeuest,needed_state):
-        tasks=Task.objects.filter(state=needed_state)
-        serializer=TaskSerializer(tasks,many=True)
-        return Response(serializer.data,status=status.HTTP_200_OK)
+        try:
+            tasks=Task.objects.filter(state=needed_state)
+            serializer=TaskSerializer(tasks,many=True)
+            return Response(serializer.data,status=status.HTTP_200_OK)
+        except Exception:
+            tasks=Task.objects.all().order_by('-id')
+            serializer=TaskSerializer(tasks,many=True)
+            return Response(serializer.data,status=status.HTTP_200_OK)

@@ -5,7 +5,7 @@ import requests
 from io import StringIO
 from contextlib import redirect_stdout
 # Create your models here.
-STATES = ('Scheduled', 'Running', 'Completed', 'Failed', 'Cancelled')
+STATES = ('Scheduled', 'Running', 'Completed', 'Failed', 'Cancelled','Error')
 # STATES = list(zip(STATES, STATES))
 
 def upload_location(instance, filename):
@@ -41,18 +41,22 @@ class Task(models.Model):
     def handler(self):
         self.state="Running"
         super().save()
-        if self.type=="URL":
-            url=self.url
-            req=requests.get(url) 
-            self.output=req.json()
-        else:
-            # print(self.file)
-            code=bytes(self.file.read()).decode("utf-8") 
-            f = StringIO()
-            with redirect_stdout(f):
-                exec(code)
-            self.output=f.getvalue()
-        self.state="Completed"
+        try:
+            if self.type=="URL":
+                url=self.url
+                req=requests.get(url) 
+                self.output=req.json()
+            else:
+                # print(self.file)
+                code=bytes(self.file.read()).decode("utf-8") 
+                f = StringIO()
+                with redirect_stdout(f):
+                    exec(code)
+                self.output=f.getvalue()
+            self.state="Completed"
+        except Exception as e:
+            self.state="Error"
+            self.output=str(e)
         super().save()
 
     def cancel(self):
