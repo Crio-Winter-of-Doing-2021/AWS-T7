@@ -108,14 +108,18 @@ class TaskRepository {
     }
   }
 
-  Future<ApiResponse<Status>> getTaskStatus(int id) async {
+  Future<ApiResponse<TaskModel>> getTaskStatus(int id) async {
     try {
       final res = await _apiService.getClient().get('/tasks/status/$id');
 
       if (res.statusCode == 200) {
-        final status = res.data['data'];
+        final status = res.data['status'];
+        final output = res.data['output'];
         return ApiResponse(
-          model: EnumToString.fromString(Status.values, status),
+          model: TaskModel(
+            state: status,
+            output: output,
+          ),
           code: 200,
         );
       } else {
@@ -142,12 +146,20 @@ class TaskRepository {
     }
   }
 
-  Future<ApiResponse<String>> checkStatus(int id) async {
+  Future<ApiResponse<TaskModel>> checkStatus(int id) async {
     try {
       final res = await _apiService.getClient().get('/tasks/status/$id');
 
       if (res.statusCode == 200) {
-        return ApiResponse(model: res.data['status'], code: 200);
+        final status = res.data['status'];
+        final output = res.data['output'];
+        return ApiResponse(
+          model: TaskModel(
+            state: status,
+            output: output,
+          ),
+          code: 200,
+        );
       } else {
         return ApiResponse.withError("Something went wrong", res.statusCode);
       }

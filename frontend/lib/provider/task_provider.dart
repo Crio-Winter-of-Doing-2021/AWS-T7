@@ -41,7 +41,7 @@ class TaskProvider extends ChangeNotifier {
       getAllTasks();
       return;
     }
-    
+
     final ApiResponse res = await _repo.getTaskByFilter(currentFilter);
 
     if (res.code == 200) {
@@ -88,10 +88,13 @@ class TaskProvider extends ChangeNotifier {
   }
 
   Future<void> checkStatus(TaskModel task) async {
-    final ApiResponse res = await _repo.checkStatus(task.id);
+    final ApiResponse<TaskModel> res = await _repo.checkStatus(task.id);
     if (res.code == 200) {
       final index = _list.indexWhere((element) => element.id == task.id);
-      _list[index] = _list[index].copyWith(state: res.model);
+      _list[index] = _list[index].copyWith(
+        state: res.model.state,
+        output: res.model.output,
+      );
       notifyListeners();
     } else {
       Helper.showToast("Something went worng", false);
