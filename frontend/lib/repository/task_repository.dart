@@ -1,4 +1,6 @@
+import 'package:dio/dio.dart';
 import 'package:enum_to_string/enum_to_string.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:frontend/config/locator.dart';
 import 'package:frontend/models/api_response.dart';
 import 'package:frontend/models/status.dart';
@@ -51,16 +53,22 @@ class TaskRepository {
     }
   }
 
-  Future<ApiResponse<TaskModel>> scheduleTask(TaskModel task) async {
+  Future<ApiResponse<TaskModel>> scheduleTask(
+      TaskModel task, PlatformFile file) async {
     try {
       final res = await _apiService.getClient().post(
-        '/tasks',
-        data: {
-          "url": task.url,
-          "time": task.time,
-          "name": task.name,
-        },
-      );
+            '/tasks',
+            data: FormData.fromMap({
+              "url": task.url,
+              "time": task.time,
+              "name": task.name,
+              "type": file != null ? "FILE" : "URL",
+              "file": MultipartFile.fromBytes(
+                file.bytes,
+                filename: file.name,
+              ),
+            }),
+          );
 
       if (res.statusCode == 201) {
         final task = TaskModel.fromMap(res.data);
@@ -75,7 +83,8 @@ class TaskRepository {
     }
   }
 
-  Future<ApiResponse<TaskModel>> modifyTask(TaskModel task) async {
+  Future<ApiResponse<TaskModel>> modifyTask(
+      TaskModel task, PlatformFile file) async {
     try {
       final res = await _apiService.getClient().patch(
         '/tasks/${task.id}',
