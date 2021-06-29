@@ -1,3 +1,4 @@
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/foundation.dart';
 import 'package:frontend/config/locator.dart';
 import 'package:frontend/models/api_response.dart';
@@ -40,7 +41,7 @@ class TaskProvider extends ChangeNotifier {
       getAllTasks();
       return;
     }
-    
+
     final ApiResponse res = await _repo.getTaskByFilter(currentFilter);
 
     if (res.code == 200) {
@@ -51,8 +52,8 @@ class TaskProvider extends ChangeNotifier {
     }
   }
 
-  Future<void> createNewTask(TaskModel task) async {
-    final ApiResponse res = await _repo.scheduleTask(task);
+  Future<void> createNewTask(TaskModel task, PlatformFile file) async {
+    final ApiResponse res = await _repo.scheduleTask(task, file);
     if (res.code == 201) {
       _list.insert(0, res.model);
       notifyListeners();
@@ -62,8 +63,8 @@ class TaskProvider extends ChangeNotifier {
     }
   }
 
-  Future<void> updateTask(TaskModel task) async {
-    final ApiResponse res = await _repo.modifyTask(task);
+  Future<void> updateTask(TaskModel task, PlatformFile file) async {
+    final ApiResponse res = await _repo.modifyTask(task, file);
     if (res.code == 200) {
       final index = _list.indexWhere((element) => element.id == task.id);
       _list[index] = res.model;
@@ -87,10 +88,13 @@ class TaskProvider extends ChangeNotifier {
   }
 
   Future<void> checkStatus(TaskModel task) async {
-    final ApiResponse res = await _repo.checkStatus(task.id);
+    final ApiResponse<TaskModel> res = await _repo.checkStatus(task.id);
     if (res.code == 200) {
       final index = _list.indexWhere((element) => element.id == task.id);
-      _list[index] = _list[index].copyWith(state: res.model);
+      _list[index] = _list[index].copyWith(
+        state: res.model.state,
+        output: res.model.output,
+      );
       notifyListeners();
     } else {
       Helper.showToast("Something went worng", false);

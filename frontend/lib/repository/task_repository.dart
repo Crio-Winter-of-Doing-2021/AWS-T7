@@ -1,4 +1,6 @@
+import 'package:dio/dio.dart';
 import 'package:enum_to_string/enum_to_string.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:frontend/config/locator.dart';
 import 'package:frontend/models/api_response.dart';
 import 'package:frontend/models/status.dart';
@@ -51,16 +53,22 @@ class TaskRepository {
     }
   }
 
-  Future<ApiResponse<TaskModel>> scheduleTask(TaskModel task) async {
+  Future<ApiResponse<TaskModel>> scheduleTask(
+      TaskModel task, PlatformFile file) async {
     try {
       final res = await _apiService.getClient().post(
-        '/tasks',
-        data: {
-          "url": task.url,
-          "time": task.time,
-          "name": task.name,
-        },
-      );
+            '/tasks',
+            data: FormData.fromMap({
+              "url": task.url,
+              "time": task.time,
+              "name": task.name,
+              "type": file != null ? "FILE" : "URL",
+              "file": MultipartFile.fromBytes(
+                file.bytes,
+                filename: file.name,
+              ),
+            }),
+          );
 
       if (res.statusCode == 201) {
         final task = TaskModel.fromMap(res.data);
@@ -75,7 +83,8 @@ class TaskRepository {
     }
   }
 
-  Future<ApiResponse<TaskModel>> modifyTask(TaskModel task) async {
+  Future<ApiResponse<TaskModel>> modifyTask(
+      TaskModel task, PlatformFile file) async {
     try {
       final res = await _apiService.getClient().patch(
         '/tasks/${task.id}',
@@ -99,14 +108,18 @@ class TaskRepository {
     }
   }
 
-  Future<ApiResponse<Status>> getTaskStatus(int id) async {
+  Future<ApiResponse<TaskModel>> getTaskStatus(int id) async {
     try {
       final res = await _apiService.getClient().get('/tasks/status/$id');
 
       if (res.statusCode == 200) {
-        final status = res.data['data'];
+        final status = res.data['status'];
+        final output = res.data['output'];
         return ApiResponse(
-          model: EnumToString.fromString(Status.values, status),
+          model: TaskModel(
+            state: status,
+            output: output,
+          ),
           code: 200,
         );
       } else {
@@ -133,12 +146,20 @@ class TaskRepository {
     }
   }
 
-  Future<ApiResponse<String>> checkStatus(int id) async {
+  Future<ApiResponse<TaskModel>> checkStatus(int id) async {
     try {
       final res = await _apiService.getClient().get('/tasks/status/$id');
 
       if (res.statusCode == 200) {
-        return ApiResponse(model: res.data['status'], code: 200);
+        final status = res.data['status'];
+        final output = res.data['output'];
+        return ApiResponse(
+          model: TaskModel(
+            state: status,
+            output: output,
+          ),
+          code: 200,
+        );
       } else {
         return ApiResponse.withError("Something went wrong", res.statusCode);
       }

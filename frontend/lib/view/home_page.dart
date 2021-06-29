@@ -40,7 +40,7 @@ class _HomePageState extends State<HomePage> {
                   children: [
                     Container(
                       decoration: BoxDecoration(
-                        color: Colors.grey[300],
+                        color: Colors.grey[200],
                         borderRadius: BorderRadius.circular(54),
                       ),
                       margin: const EdgeInsets.symmetric(horizontal: 16.0),
@@ -62,7 +62,7 @@ class _HomePageState extends State<HomePage> {
                         iconEnabledColor: AppTheme.accentColor,
                         style: TextStyle(
                           color: AppTheme.accentColor,
-                          fontWeight: FontWeight.w500,
+                          fontWeight: FontWeight.w600,
                           fontSize: 18.0,
                         ),
                       ),

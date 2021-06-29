@@ -6,6 +6,8 @@ class TaskModel {
   final String state;
   final int time;
   final String url;
+  final String output;
+  final String file;
 
   TaskModel({
     this.id,
@@ -13,6 +15,8 @@ class TaskModel {
     this.state,
     this.time,
     this.url,
+    this.output,
+    this.file,
   });
 
   TaskModel copyWith({
@@ -21,6 +25,8 @@ class TaskModel {
     String state,
     int time,
     String url,
+    String output,
+    String file,
   }) {
     return TaskModel(
       id: id ?? this.id,
@@ -28,6 +34,8 @@ class TaskModel {
       state: state ?? this.state,
       time: time ?? this.time,
       url: url ?? this.url,
+      output: output ?? this.output,
+      file: file ?? this.file,
     );
   }
 
@@ -38,6 +46,8 @@ class TaskModel {
       'state': state,
       'time': time,
       'url': url,
+      'output': output,
+      'file': file,
     };
   }
 
@@ -48,6 +58,8 @@ class TaskModel {
       state: map['state'],
       time: map['time'],
       url: map['url'],
+      output: map['output'],
+      file: map['file'],
     );
   }
 
@@ -57,7 +69,7 @@ class TaskModel {
 
   @override
   String toString() {
-    return 'TaskModel(id: $id, name: $name, state: $state, time: $time, url: $url)';
+    return 'TaskModel(id: $id, name: $name, state: $state, time: $time, url: $url, output: $output, file: $file)';
   }
 
   @override
@@ -69,7 +81,9 @@ class TaskModel {
       other.name == name &&
       other.state == state &&
       other.time == time &&
-      other.url == url;
+      other.url == url &&
+      other.output == output &&
+      other.file == file;
   }
 
   @override
@@ -78,6 +92,8 @@ class TaskModel {
       name.hashCode ^
       state.hashCode ^
       time.hashCode ^
-      url.hashCode;
+      url.hashCode ^
+      output.hashCode ^
+      file.hashCode;
   }
 }

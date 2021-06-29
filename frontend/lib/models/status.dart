@@ -1,3 +1,3 @@
 enum Status{
-  Scheduled, Running, Completed, Failed, Cancelled
+  Scheduled, Running, Completed, Failed, Cancelled, Error
 }

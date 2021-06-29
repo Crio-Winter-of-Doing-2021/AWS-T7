@@ -20,6 +20,7 @@ dependencies:
   logger: ^0.9.4
   provider: ^5.0.0
   shared_preferences: ^2.0.4
+  file_picker: ^3.0.3
 
 dev_dependencies:
   flutter_test:

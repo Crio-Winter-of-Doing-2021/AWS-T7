@@ -24,11 +24,28 @@ class TaskWidget extends StatelessWidget {
           horizontal: 16.0,
           vertical: 8.0,
         ),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(task.name),
-            _buildOptions(context, task),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(task.name),
+                _buildOptions(context, task),
+              ],
+            ),
+            if (task.output != null && task.output.isNotEmpty)
+              Container(
+                width: double.infinity,
+                margin: const EdgeInsets.symmetric(vertical: 8),
+                decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(16),
+                    color: Colors.grey[100]),
+                child: Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Text(task.output),
+                ),
+              ),
           ],
         ),
       ),
