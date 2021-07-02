@@ -56,18 +56,21 @@ class TaskRepository {
   Future<ApiResponse<TaskModel>> scheduleTask(
       TaskModel task, PlatformFile file) async {
     try {
+      final data = {
+        "url": task.url,
+        "time": task.time,
+        "name": task.name,
+        "type": file != null ? "FILE" : "URL",
+      };
+      if (file != null) {
+        data["file"] = MultipartFile.fromBytes(
+          file.bytes,
+          filename: file.name,
+        );
+      }
       final res = await _apiService.getClient().post(
             '/tasks',
-            data: FormData.fromMap({
-              "url": task.url,
-              "time": task.time,
-              "name": task.name,
-              "type": file != null ? "FILE" : "URL",
-              "file": MultipartFile.fromBytes(
-                file.bytes,
-                filename: file.name,
-              ),
-            }),
+            data: FormData.fromMap(data),
           );
 
       if (res.statusCode == 201) {
