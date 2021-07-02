@@ -58,7 +58,7 @@ class TaskModel {
       state: map['state'],
       time: map['time'],
       url: map['url'],
-      output: map['output'],
+      output: map['output'].toString(),
       file: map['file'],
     );
   }
